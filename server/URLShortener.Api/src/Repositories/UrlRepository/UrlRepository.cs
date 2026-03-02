@@ -6,14 +6,14 @@ namespace URLShortener.Api.Repositories;
 
 public class UrlRepository(AppDbContext db) : IUrlRepository
 {
-    public async Task<Url> GetByShortUrlAsync(string shortUrl)
+    public async Task<Url?> GetByShortUrlAsync(string shortUrl)
     {
         return await db.Urls.FirstOrDefaultAsync(x => x.ShortUrl == shortUrl);
     }
 
-    public async Task<bool> ExistsShortUrlAsync(string shortUrl)
+    public async Task<Url?> GetByLongUrlAsync(string longUrl)
     {
-        return await db.Urls.AnyAsync(x => x.ShortUrl == shortUrl);
+        return await db.Urls.FirstOrDefaultAsync(x => x.LongUrl == longUrl);
     }
 
     public async Task<Url> CreateAsync(Url url)

@@ -12,7 +12,7 @@ using URLShortener.Api.Persistence;
 namespace URLShortener.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260219182930_InitialCreate")]
+    [Migration("20260302122834_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace URLShortener.Api.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("URLShortener.Api.Entities.ShortLink", b =>
+            modelBuilder.Entity("URLShortener.Api.Entities.Url", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -40,7 +40,7 @@ namespace URLShortener.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("ShortCode")
+                    b.Property<string>("ShortUrl")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -49,7 +49,7 @@ namespace URLShortener.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ShortLinks");
+                    b.ToTable("Urls");
                 });
 #pragma warning restore 612, 618
         }

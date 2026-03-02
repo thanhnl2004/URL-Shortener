@@ -3,22 +3,32 @@ using URLShortener.Api.Repositories;
 
 namespace URLShortener.Api.Services;
 
-public class UrlService(IUnitOfWork unitOfWork) : IUrlService
+public class UrlService(IUnitOfWork unitOfWork, IHashService hashService, IIdGeneratorService idGeneratorService) 
+    : IUrlService
 {
     public async Task<Url> GetByShortUrlAsync(string shortUrl)
     {
         return await unitOfWork.Urls.GetByShortUrlAsync(shortUrl);
     }
 
-    public async Task<bool> ExistsShortUrlAsync(string shortUrl)
+    public async Task<Url> ShortenAsync(string longUrl)
     {
-        return await unitOfWork.Urls.ExistsShortUrlAsync(shortUrl);
-    }
+        var existing = await unitOfWork.Urls.GetByLongUrlAsync(longUrl);
+        if (existing != null) return existing;
 
-    public async Task<Url> CreateAsync(Url url)
-    {
-        Url newUrl = await unitOfWork.Urls.CreateAsync(url);
+        var uniqueId = idGeneratorService.NextId();
+        var shortUrl = hashService.Encode(BitConverter.GetBytes(uniqueId));
+
+        var url = new Url
+        {
+            Id = uniqueId,
+            LongUrl = longUrl,
+            ShortUrl = shortUrl
+        };
+
+        await unitOfWork.Urls.CreateAsync(url);
         await unitOfWork.SaveChangesAsync();
-        return newUrl;
+
+        return url;
     }
 }
