@@ -1,9 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using URLShortener.Api.Persistence;
+using URLShortener.Api.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
+builder.Services.AddAppServices(builder.Configuration);
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

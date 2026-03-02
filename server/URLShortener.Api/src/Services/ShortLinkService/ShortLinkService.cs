@@ -3,7 +3,7 @@ using URLShortener.Api.Repositories;
 
 namespace URLShortener.Api.Services;
 
-public class ShortLinkService(UnitOfWork unitOfWork) : IShortLinkService
+public class ShortLinkService(IUnitOfWork unitOfWork) : IShortLinkService
 {
     public async Task<ShortLink> GetByShortCodeAsync(string shortCode)
     {
@@ -14,9 +14,13 @@ public class ShortLinkService(UnitOfWork unitOfWork) : IShortLinkService
     {
         return await unitOfWork.ShortLinks.ExistsShortCodeAsync(shortCode);
     }
+    
+    
 
     public async Task<ShortLink> CreateAsync(ShortLink shortLink)
     {
-        return await unitOfWork.ShortLinks.CreateAsync(shortLink);
+        ShortLink newShortLink =  await unitOfWork.ShortLinks.CreateAsync(shortLink);
+        await unitOfWork.SaveChangesAsync();
+        return newShortLink;
     }
 }
