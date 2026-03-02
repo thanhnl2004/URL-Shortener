@@ -11,14 +11,19 @@ public class UrlController(IUrlService urlService) : ControllerBase
 {   
     [HttpPost]
     [Route("shorten")]
-    public async Task<ActionResult<Url>> ShortenAsync([FromBody] CreateUrlRequest request)
+    public async Task<ActionResult<UrlResponse>> ShortenAsync([FromBody] CreateUrlRequest request)
     {
-        return await urlService.ShortenAsync(request.LongUrl);
+        var url = await urlService.ShortenAsync(request.LongUrl);
+        return new UrlResponse
+        {
+            ShortUrl = url.ShortUrl,
+            LongUrl = url.LongUrl
+        };
     }
 
     [HttpGet]
     [Route("{shortUrl}")]
-    public async Task<IActionResult> RedirectAsync(string shortUrl)
+    public async Task<ActionResult> RedirectAsync([FromRoute] string shortUrl)
     {
         var url = await urlService.GetByShortUrlAsync(shortUrl);
         return Redirect(url.LongUrl);
