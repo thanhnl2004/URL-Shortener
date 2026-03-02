@@ -1,7 +1,7 @@
 using System.Numerics;
 using System.Text;
 
-namespace URLShortener.Api.Services.HashService;
+namespace URLShortener.Api.Services;
 
 public class Base62Service : IHashService
 {

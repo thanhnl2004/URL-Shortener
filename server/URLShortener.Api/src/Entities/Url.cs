@@ -1,10 +1,10 @@
 namespace URLShortener.Api.Entities;
 
-public class ShortLink
+public class Url
 {
     public long Id { get; set; }
 
-    public required string ShortCode { get; set; }
+    public required string ShortUrl { get; set; }
     public required string LongUrl { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

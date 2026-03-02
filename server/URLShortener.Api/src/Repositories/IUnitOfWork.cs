@@ -2,6 +2,6 @@ namespace URLShortener.Api.Repositories;
 
 public interface IUnitOfWork : IDisposable
 {
-    IShortLinkRepository ShortLinks { get; }
+    IUrlRepository Urls { get; }
     Task<int> SaveChangesAsync();
 }

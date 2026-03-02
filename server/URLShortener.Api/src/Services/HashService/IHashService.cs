@@ -1,4 +1,4 @@
-namespace URLShortener.Api.Services.HashService;
+namespace URLShortener.Api.Services;
 
 public interface IHashService
 {

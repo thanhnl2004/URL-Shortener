@@ -4,8 +4,8 @@ namespace URLShortener.Api.Repositories;
 
 public class UnitOfWork(AppDbContext context) : IUnitOfWork
 {
-    private IShortLinkRepository shortLinks;
-    public IShortLinkRepository ShortLinks => shortLinks = new ShortLinkRepository(context);
+    private IUrlRepository urls;
+    public IUrlRepository Urls => urls ??= new UrlRepository(context);
     
     public async Task<int> SaveChangesAsync() => await context.SaveChangesAsync();
 
