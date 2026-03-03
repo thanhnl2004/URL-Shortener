@@ -1,4 +1,5 @@
 using URLShortener.Api.Entities;
+using URLShortener.Api.Exceptions;
 using URLShortener.Api.Repositories;
 
 namespace URLShortener.Api.Services;
@@ -8,7 +9,8 @@ public class UrlService(IUnitOfWork unitOfWork, IHashService hashService, IIdGen
 {
     public async Task<Url> GetByShortUrlAsync(string shortUrl)
     {
-        return await unitOfWork.Urls.GetByShortUrlAsync(shortUrl);
+        return await unitOfWork.Urls.GetByShortUrlAsync(shortUrl)
+            ?? throw new NotFoundException($"Short URL '{shortUrl}' not found.");
     }
 
     public async Task<Url> ShortenAsync(string longUrl)

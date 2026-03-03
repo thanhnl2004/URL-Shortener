@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using URLShortener.Api.Middlewares;
 using URLShortener.Api.Persistence;
 using URLShortener.Api.Utils;
 
@@ -18,6 +19,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 
