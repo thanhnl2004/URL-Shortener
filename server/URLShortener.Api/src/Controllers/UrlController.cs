@@ -23,6 +23,8 @@ public class UrlController(IUrlService urlService) : ControllerBase
 
     [HttpGet]
     [Route("{shortUrl}")]
+    [ProducesResponseType(StatusCodes.Status302Found)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> RedirectAsync([FromRoute] string shortUrl)
     {
         var url = await urlService.GetByShortUrlAsync(shortUrl);
