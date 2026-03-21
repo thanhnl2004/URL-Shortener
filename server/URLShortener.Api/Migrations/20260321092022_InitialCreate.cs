@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace URLShortener.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class AddIdentity : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -157,6 +157,28 @@ namespace URLShortener.Api.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Urls",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false),
+                    ShortUrl = table.Column<string>(type: "text", nullable: false),
+                    LongUrl = table.Column<string>(type: "text", nullable: false),
+                    OwnerUserId = table.Column<string>(type: "text", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Urls", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Urls_AspNetUsers_OwnerUserId",
+                        column: x => x.OwnerUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -193,6 +215,17 @@ namespace URLShortener.Api.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Urls_OwnerUserId_LongUrl",
+                table: "Urls",
+                columns: new[] { "OwnerUserId", "LongUrl" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Urls_ShortUrl",
+                table: "Urls",
+                column: "ShortUrl",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -212,6 +245,9 @@ namespace URLShortener.Api.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Urls");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

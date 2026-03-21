@@ -230,6 +230,9 @@ namespace URLShortener.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("OwnerUserId")
+                        .HasColumnType("text");
+
                     b.Property<string>("ShortUrl")
                         .IsRequired()
                         .HasColumnType("text");
@@ -241,6 +244,8 @@ namespace URLShortener.Api.Migrations
 
                     b.HasIndex("ShortUrl")
                         .IsUnique();
+
+                    b.HasIndex("OwnerUserId", "LongUrl");
 
                     b.ToTable("Urls");
                 });
@@ -294,6 +299,21 @@ namespace URLShortener.Api.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("URLShortener.Api.Entities.Url", b =>
+                {
+                    b.HasOne("URLShortener.Api.Entities.AppUser", "OwnerUser")
+                        .WithMany("OwnedUrls")
+                        .HasForeignKey("OwnerUserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("OwnerUser");
+                });
+
+            modelBuilder.Entity("URLShortener.Api.Entities.AppUser", b =>
+                {
+                    b.Navigation("OwnedUrls");
                 });
 #pragma warning restore 612, 618
         }

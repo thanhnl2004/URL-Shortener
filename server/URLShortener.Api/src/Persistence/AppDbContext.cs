@@ -11,6 +11,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
         modelBuilder.Entity<Url>()
             .Property(u => u.Id)
             .ValueGeneratedNever();
@@ -18,5 +19,14 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
         modelBuilder.Entity<Url>()
             .HasIndex(u => u.ShortUrl)
             .IsUnique();
+
+        modelBuilder.Entity<Url>()
+            .HasIndex(u => new { u.OwnerUserId, u.LongUrl });
+
+        modelBuilder.Entity<Url>()
+            .HasOne(u => u.OwnerUser)
+            .WithMany(u => u.OwnedUrls)
+            .HasForeignKey(u => u.OwnerUserId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

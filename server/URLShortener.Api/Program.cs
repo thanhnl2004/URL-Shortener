@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using URLShortener.Api.Configurations;
 using URLShortener.Api.Entities;
 using URLShortener.Api.Middlewares;
@@ -57,7 +58,27 @@ builder.Services.AddAuthorization();
 builder.Services.AddAppServices(builder.Configuration);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    var bearerScheme = new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Description = "Enter: Bearer {your JWT access token}",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = JwtBearerDefaults.AuthenticationScheme.ToLowerInvariant(),
+        BearerFormat = "JWT"
+    };
+
+    options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, bearerScheme);
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecuritySchemeReference(
+            JwtBearerDefaults.AuthenticationScheme,
+            document,
+            externalResource: null)] = []
+    });
+});
 
 var app = builder.Build();
 

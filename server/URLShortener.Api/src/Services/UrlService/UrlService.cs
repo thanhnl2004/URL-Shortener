@@ -13,9 +13,15 @@ public class UrlService(IUnitOfWork unitOfWork, IHashService hashService, IIdGen
             ?? throw new NotFoundException($"Short URL '{shortUrl}' not found.");
     }
 
-    public async Task<Url> ShortenAsync(string longUrl)
+    public async Task<IReadOnlyList<Url>> GetMineAsync(string ownerUserId)
     {
-        var existing = await unitOfWork.Urls.GetByLongUrlAsync(longUrl);
+        return await unitOfWork.Urls.GetByOwnerUserIdAsync(ownerUserId);
+    }
+
+    public async Task<Url> ShortenAsync(string longUrl, string ownerUserId)
+    {
+        var existing = await unitOfWork.Urls.GetByLongUrlAndOwnerAsync(longUrl, ownerUserId);
+
         if (existing != null) return existing;
 
         var uniqueId = idGeneratorService.NextId();
@@ -25,7 +31,8 @@ public class UrlService(IUnitOfWork unitOfWork, IHashService hashService, IIdGen
         {
             Id = uniqueId,
             LongUrl = longUrl,
-            ShortUrl = shortUrl
+            ShortUrl = shortUrl,
+            OwnerUserId = ownerUserId
         };
 
         await unitOfWork.Urls.CreateAsync(url);
